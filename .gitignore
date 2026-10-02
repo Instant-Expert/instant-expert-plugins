@@ -1,0 +1,8 @@
+.DS_Store
+Thumbs.db
+desktop.ini
+__MACOSX/
+# mcp-publisher downloads and login state (CI or local runs)
+mcp-publisher
+mcp-publisher.tar.gz
+.mcpregistry_*
