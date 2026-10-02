@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "instant-expert": {
+      "type": "http",
+      "url": "https://instant.expert/mcp"
+    }
+  }
+}
