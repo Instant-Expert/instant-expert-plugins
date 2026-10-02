@@ -1,0 +1,108 @@
+# Publishes server.json to the official MCP Registry
+# (registry.modelcontextprotocol.io).
+#
+# Runs when a tag like `registry-v3.0.0` is pushed, or by hand from the
+# Actions tab. It uses GitHub OIDC, so the repository needs no secrets: the
+# registry trusts the workflow's identity token and grants publish rights for
+# `io.github.<repository owner>/*`. The match is case-sensitive, so the
+# `name` in server.json must use the org login exactly as GitHub spells it
+# (`Instant-Expert`).
+#
+# Registry tags use their own `registry-v*` prefix so that plugin releases
+# (`v*` tags, which the Gemini CLI gallery also reads) never republish the
+# registry entry by accident. Moving to the `expert.instant/*` domain
+# namespace later needs the registry's HTTP or DNS login instead of OIDC.
+name: Publish to MCP Registry
+
+on:
+  push:
+    tags: ["registry-v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (leave empty to use server.json's version)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mcp-registry-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # Forks can't publish anyway (OIDC grants only their own namespace), but
+    # skipping keeps their Actions tab free of failed runs.
+    if: github.repository_owner == 'Instant-Expert'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # required for `mcp-publisher login github-oidc`
+      contents: read
+    env:
+      # Pinned and checksummed so a compromised or breaking "latest" release
+      # can't publish on our behalf. v1.7.6+ is required: it binds the OIDC
+      # token to the registry's audience. Bump both values together from
+      # https://github.com/modelcontextprotocol/registry/releases.
+      MCP_PUBLISHER_VERSION: v1.7.9
+      MCP_PUBLISHER_SHA256: ab128162b0616090b47cf245afe0a23f3ef08936fdce19074f5ba0a4469281ac
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            version="${GITHUB_REF_NAME#registry-v}"
+          else
+            version="$INPUT_VERSION"
+          fi
+          if [ -n "$version" ]; then
+            # The registry rejects ranges and "latest"; require a plain version.
+            if ! printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$'; then
+              echo "::error::'$version' is not a version like 3.0.0"
+              exit 1
+            fi
+            jq --arg v "$version" '.version = $v' server.json > server.tmp
+            mv server.tmp server.json
+          fi
+          echo "Publishing $(jq -r '.name + " " + .version' server.json)"
+
+      - name: Check the namespace matches the repository owner
+        run: |
+          name="$(jq -r .name server.json)"
+          case "$name" in
+            io.github.*)
+              expected="io.github.${GITHUB_REPOSITORY_OWNER}/"
+              case "$name" in
+                "$expected"*) ;;
+                *)
+                  echo "::error::server.json name '$name' must start with '$expected' (case-sensitive) to publish with GitHub OIDC"
+                  exit 1
+                  ;;
+              esac
+              ;;
+            *)
+              echo "::error::'$name' is not an io.github.* name. Domain namespaces need the registry's HTTP or DNS login step."
+              exit 1
+              ;;
+          esac
+
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL -o mcp-publisher.tar.gz \
+            "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
+          echo "${MCP_PUBLISHER_SHA256}  mcp-publisher.tar.gz" | sha256sum -c -
+          tar xzf mcp-publisher.tar.gz mcp-publisher
+
+      - name: Validate server.json
+        run: ./mcp-publisher validate server.json
+
+      - name: Log in with GitHub OIDC
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish
+        run: ./mcp-publisher publish server.json
