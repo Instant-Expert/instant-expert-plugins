@@ -1,0 +1,11 @@
+{
+  "name": "instant-expert",
+  "version": "1.0.0",
+  "description": "Find specific professionals or bring a lead list, prepare paid call or written-answer invitations, and check replies. Pay only when someone books or answers.",
+  "mcpServers": {
+    "instant-expert": {
+      "httpUrl": "https://instant.expert/mcp"
+    }
+  },
+  "contextFileName": "GEMINI.md"
+}
