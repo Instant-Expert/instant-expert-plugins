@@ -1,0 +1,24 @@
+{
+  "name": "instant-expert",
+  "description": "Instant Expert for Claude: find specific professionals or bring a lead list, prepare paid invitations to a short call or written answer, and check replies.",
+  "owner": {
+    "name": "Instant Expert",
+    "email": "team@instant.expert",
+    "url": "https://instant.expert"
+  },
+  "plugins": [
+    {
+      "name": "instant-expert",
+      "source": "./plugins/instant-expert",
+      "description": "Find and invite specific executives, operators and experts (or a lead list you already have) to a paid call or written answer. You pay only when someone books or answers.",
+      "category": "sales",
+      "tags": [
+        "sales",
+        "outreach",
+        "customer-discovery",
+        "user-research",
+        "lead-list"
+      ]
+    }
+  ]
+}
