@@ -1,0 +1,17 @@
+{
+  "name": "instant-expert",
+  "owner": {
+    "name": "Instant Expert",
+    "email": "team@instant.expert"
+  },
+  "metadata": {
+    "description": "Instant Expert for Cursor: find specific professionals or bring a lead list, and invite them to a paid call or written answer."
+  },
+  "plugins": [
+    {
+      "name": "instant-expert",
+      "source": "plugins/instant-expert",
+      "description": "Find and invite specific executives, operators and experts (or a lead list you already have) to a paid call or written answer. You pay only when someone books or answers."
+    }
+  ]
+}
