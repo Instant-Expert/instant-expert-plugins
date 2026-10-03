@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.Instant-Expert/instant-expert",
   "title": "Instant Expert",
-  "description": "Find specific execs, operators and experts and invite them to paid calls. Pay only when they book.",
-  "version": "3.0.0",
+  "description": "Invite specific execs and experts to a paid call or written answer. Pay only if they book or answer.",
+  "version": "3.1.0",
   "websiteUrl": "https://instant.expert/docs/mcp",
   "repository": {
     "url": "https://github.com/Instant-Expert/instant-expert-plugins",
