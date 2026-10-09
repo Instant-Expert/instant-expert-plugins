@@ -16,7 +16,7 @@ This plugin bundles two things: the Instant Expert connector (a remote MCP serve
 
 ## Pricing
 
-Searching, importing contacts and preparing drafts cost nothing (they count toward your account's limits). You set the price per person, $5 minimum, including Instant Expert's fee. A call is charged when the person books it, a written or voice answer when the reply is completed, and nothing is charged if nobody accepts. Details: https://instant.expert/docs/limits
+Searching, importing contacts and preparing drafts cost nothing (they count toward your account's limits). You set what each person receives, $5 minimum, and Instant Expert's fee is added on top. A call is charged when the person books it, a written or voice answer when the reply is completed, and nothing is charged if nobody accepts. Details: https://instant.expert/docs/limits
 
 ## Data
 

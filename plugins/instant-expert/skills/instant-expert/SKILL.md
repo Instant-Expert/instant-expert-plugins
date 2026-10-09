@@ -44,7 +44,7 @@ Don't use it to find personal contact details (home address, personal phone or e
 5. Call `queue_requests` with the `search_id` (plus `person_profile_ids` to keep a subset) and:
    - `message`: up to 500 characters. Start from the plan's draft message if there is one, and let the user edit it.
    - `request_type`: `call` with `call_duration_minutes` of 15, 30, 45 or 60, or `text_voice_note` for a written or voice answer.
-   - `offer_cents`: the price per person who accepts, $5 minimum. Leave it out to use each person's suggested price.
+   - `offer_cents`: what each person who accepts receives, $5 minimum; Instant Expert's fee is added on top. Leave it out to use each person's suggested price.
    - `max_spend_cents`: the cap on total spend across everyone who accepts.
    - `idempotency_key`: a new key for this draft.
 6. Poll `get_job` for the `draft_id`, then read it with `get_request_draft`. If the job lists `needs_name`, tell the user those invitations will open with a generic greeting.
@@ -58,7 +58,7 @@ When the user pastes LinkedIn profile URLs or emails, don't search. Call `queue_
 
 1. Call `prepare_request_order` with the `draft_id`, then show the user the preview: who will be invited and how many, the message, the price per person, the total cap, the saved card, the payment mode, when they will be charged, and the terms.
 2. Call `send_requests` only after the user explicitly approves that preview in this conversation, for example "yes, send it". A request to "draft" or "prepare" is not approval. Pass the `confirmation_token`, `payment_method_reference`, `payment_mode` and `terms_version` from the preview, `confirmed: true`, and a new `idempotency_key`. After an uncertain result such as a timeout, retry with the same key; never switch keys on your own.
-3. Explain the charging: a call is charged when the person books it, and a written or voice answer when the reply is completed. If nobody accepts, nothing is charged. Sending places one authorization hold for the largest single offer, and prices include Instant Expert's fee.
+3. Explain the charging: a call is charged when the person books it, and a written or voice answer when the reply is completed. If nobody accepts, nothing is charged. Sending places one authorization hold for the largest single offer. Prices are what each person receives; Instant Expert's fee is added on top and charged with each one.
 4. If `status` is `action_required`, don't send. Give the user the `action_url` (servers that don't return it yet return `review_url` and `payment_settings_url` instead). On that page the user adds a card, can allow this assistant to send paid requests, or can send from the page. Never ask for card details in chat. When the user is back, call `prepare_request_order` again and show the new preview.
    - `select_saved_card`: ask which card, then prepare again with its `payment_method_reference`.
    - `spending_cap_required`: ask for a cap, then prepare again with `max_spend_cents`.
