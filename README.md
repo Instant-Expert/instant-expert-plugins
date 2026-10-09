@@ -29,7 +29,7 @@ This repo has the install files for using Instant Expert from Claude, Cowork, Cl
 ## Pricing
 
 - Searching, importing contacts and preparing drafts are free. They count toward your account's [limits](https://instant.expert/docs/limits).
-- You set the price per person ($5 minimum, Instant Expert's fee included), or use each person's suggested price. Typical offers are probably in the $25 to $300 range, depending on seniority and whether it's a call or a written answer.
+- You set what each person receives ($5 minimum, with Instant Expert's fee added on top), or use each person's suggested price. Typical offers are probably in the $25 to $300 range, depending on seniority and whether it's a call or a written answer.
 - A call is charged when the person books it. A written or voice answer is charged when the reply is completed. If nobody accepts, you pay nothing.
 - A total cap (`max_spend_cents`) limits spend, so you can invite more people than the cap would cover if everyone said yes.
 
